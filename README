@@ -1,3 +1,74 @@
+为了使TinyHttpd能够在Linux系统顺利编译并运行，这里做了如下修改：
+
+httpd.c 的第33 行
+```
+void accept_request(int);
+```
+修改为
+```
+void *accept_request(void *);
+```
+httpd.c 的第51行
+```
+void accept_request(int client)
+{
+  char buf[1024];
+  ...
+}
+```
+修改为
+```
+void *accept_request(void* tclient)
+{
+  int client = *(int *)tclient;
+  char buf[1024];
+  ...
+```
+httpd.c 的第76行
+```
+return;
+```
+修改为
+```
+return NULL;
+```
+httpd.c 的第124行，添加
+```
+return NULL;
+```
+httpd.c 的第438 行
+```
+int namelen = sizeof(name);
+```
+修改为
+```
+socklen_t namelen = sizeof(name);
+```
+httpd.c 的第458行
+```
+int client_name_len = sizeof(client_name);
+```
+修改为
+```
+socklen_t client_name_len = sizeof(client_name);
+```
+httpd.c 的第471行修改为
+```
+if (pthread_create(&newthread , NULL, accept_request, (void*)&client_sock) != 0)
+```
+MakeFile中
+```
+gcc -W -Wall -lsocket -lpthread -o httpd httpd.c
+```
+修改为
+```
+gcc -W -Wall -o httpd httpd.c -lpthread
+```
+
+
+####################################################################
+
+
   This software is copyright 1999 by J. David Blackstone.  Permission
 is granted to redistribute and modify this software under the terms of
 the GNU General Public License, available at http://www.gnu.org/ .
