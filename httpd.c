@@ -245,8 +245,8 @@ void execute_cgi(int client, const char *path,
         char query_env[255];
         char length_env[255];
 
-        dup2(cgi_output[1], 1);//重定向写入端到cgi_output那一管道的写入端。
-        dup2(cgi_input[0], 0);//重定向读取端到cgi_input那一管道的读取端。
+        dup2(cgi_output[1], 1);//重定向STDOUT到cgi_output那一管道的写入端。
+        dup2(cgi_input[0], 0);//重定向STDIN到cgi_input那一管道的读取端。
         close(cgi_output[0]);//关闭cgi_output那一管道的读取端。
         close(cgi_input[1]);//关闭cgi_input那一管道的写入端。
         sprintf(meth_env, "REQUEST_METHOD=%s", method);
@@ -258,7 +258,7 @@ void execute_cgi(int client, const char *path,
             sprintf(length_env, "CONTENT_LENGTH=%d", content_length);
             putenv(length_env);
         }
-        execl(path, path, NULL);//execl：执行参数path文件路径，执行参数为这一可执行文件，最后一个参数必须用空指针(NULL)作结束. 
+        execl(path,path, NULL);//execl：执行参数path文件路径，执行参数为这一可执行文件，最后一个参数必须用空指针(NULL)作结束. 
         exit(0);//结束当前子进程
     } else {    /* parent */
         close(cgi_output[1]);//关闭cgi_output那一管道的写入端。

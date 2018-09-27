@@ -1,14 +1,37 @@
-为了使TinyHttpd能够在Linux系统顺利编译并运行，这里做了如下修改：
+#### TinyHttpd
 
-httpd.c 的第33 行
+##### 1、修改代码
+
+###### 1.1 修改 Makefile 文件
+
+去掉 -lsocket。socket在linux中的实现位于libc中，编译时被默认包含。
+
+###### 1.2 修改 cgi 文件
+
+在 htdocs 文件下，有 cgi 的程序，cgi 是用 perl 写的，但文件中声明的 perl 执行程序位置是错的， perl 脚本位于 /usr/bin 中（用 which perl 可以查看），所以第一行改为：
+
+```
+#!/usr/bin/perl -Tw
+```
+
+###### 1.3 修改 httpd.c 文件
+
+为了能够在Linux系统顺利编译并运行，这里做了如下修改。
+
+httpd.c 的第33行
+
 ```
 void accept_request(int);
 ```
+
 修改为
+
 ```
 void *accept_request(void *);
 ```
+
 httpd.c 的第51行
+
 ```
 void accept_request(int client)
 {
@@ -16,7 +39,9 @@ void accept_request(int client)
   ...
 }
 ```
+
 修改为
+
 ```
 void *accept_request(void* tclient)
 {
@@ -24,49 +49,56 @@ void *accept_request(void* tclient)
   char buf[1024];
   ...
 ```
+
 httpd.c 的第76行
+
 ```
 return;
 ```
+
 修改为
+
 ```
 return NULL;
 ```
+
 httpd.c 的第124行，添加
+
 ```
 return NULL;
 ```
+
 httpd.c 的第438 行
+
 ```
 int namelen = sizeof(name);
 ```
+
 修改为
+
 ```
 socklen_t namelen = sizeof(name);
 ```
+
 httpd.c 的第458行
+
 ```
 int client_name_len = sizeof(client_name);
 ```
+
 修改为
+
 ```
 socklen_t client_name_len = sizeof(client_name);
 ```
+
 httpd.c 的第471行修改为
+
 ```
 if (pthread_create(&newthread , NULL, accept_request, (void*)&client_sock) != 0)
 ```
-MakeFile中
-```
-gcc -W -Wall -lsocket -lpthread -o httpd httpd.c
-```
-修改为
-```
-gcc -W -Wall -o httpd httpd.c -lpthread
-```
 
-
-####################################################################
+---------------------------------------------------------------------
 
 
   This software is copyright 1999 by J. David Blackstone.  Permission

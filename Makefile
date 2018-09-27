@@ -1,7 +1,8 @@
-all: httpd
+all:httpd
+
 
 httpd: httpd.c
-	gcc -W -Wall -o httpd httpd.c -lpthread
+	gcc httpd.c -lpthread -W -Wall -o httpd
 
-clean:
+clean: 
 	rm httpd
