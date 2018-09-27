@@ -1,12 +1,38 @@
 #### TinyHttpd
 
-##### 1、修改代码
+##### 1、安装 perl
 
-###### 1.1 修改 Makefile 文件
+###### 1.1 Ubuntu安装perl
+
+1)安装cpan：
+
+```
+sudo perl -MCPAN -e install Spiffy
+```
+
+(用此命令第一次安装任意模块时都会先把cpan装上)
+
+2)安装perl模块：
+
+```
+sudo cpan install DBI
+```
+
+3)验证是否安装成功
+
+```
+perl -e 'use DBI'  
+```
+
+（没报错即成功）
+
+##### 2、修改代码
+
+###### 2.1 修改 Makefile 文件
 
 去掉 -lsocket。socket在linux中的实现位于libc中，编译时被默认包含。
 
-###### 1.2 修改 cgi 文件
+###### 2.2 修改 cgi 文件
 
 在 htdocs 文件下，有 cgi 的程序，cgi 是用 perl 写的，但文件中声明的 perl 执行程序位置是错的， perl 脚本位于 /usr/bin 中（用 which perl 可以查看），所以第一行改为：
 
@@ -14,7 +40,7 @@
 #!/usr/bin/perl -Tw
 ```
 
-###### 1.3 修改 httpd.c 文件
+###### 2.3 修改 httpd.c 文件
 
 为了能够在Linux系统顺利编译并运行，这里做了如下修改。
 
