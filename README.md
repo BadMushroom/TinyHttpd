@@ -1,8 +1,8 @@
-#### TinyHttpd
+### TinyHttpd
 
-##### 1、安装 perl
+#### 1、安装 perl
 
-###### 1.1 Ubuntu安装perl
+##### 1.1 Ubuntu安装perl
 
 1)安装cpan：
 
@@ -26,13 +26,13 @@ perl -e 'use DBI'
 
 （没报错即成功）
 
-##### 2、修改代码
+#### 2、修改代码
 
-###### 2.1 修改 Makefile 文件
+##### 2.1 修改 Makefile 文件
 
 去掉 -lsocket。socket在linux中的实现位于libc中，编译时被默认包含。
 
-###### 2.2 修改 cgi 文件
+##### 2.2 修改 cgi 文件
 
 在 htdocs 文件下，有 cgi 的程序，cgi 是用 perl 写的，但文件中声明的 perl 执行程序位置是错的， perl 脚本位于 /usr/bin 中（用 which perl 可以查看），所以第一行改为：
 
@@ -40,7 +40,7 @@ perl -e 'use DBI'
 #!/usr/bin/perl -Tw
 ```
 
-###### 2.3 修改 httpd.c 文件
+##### 2.3 修改 httpd.c 文件
 
 为了能够在Linux系统顺利编译并运行，这里做了如下修改。
 
@@ -124,6 +124,17 @@ httpd.c 的第471行修改为
 if (pthread_create(&newthread , NULL, accept_request, (void*)&client_sock) != 0)
 ```
 
+#### 3、编译运行
+
+```
+make
+
+./httpd
+```
+
+（提示运行时的端口号）
+
+浏览器输入 http://127.0.0.1:端口号
 ---------------------------------------------------------------------
 
 
